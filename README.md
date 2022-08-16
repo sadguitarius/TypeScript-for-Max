@@ -25,9 +25,9 @@ Included in this archive
         ExampleJSUI.ts              Example [jsui] code
         ExampleModule.ts            An example module used by both examples
         /types
-            cycling74-max7.d.ts         Definition file for JavaScript in Max
-            cycling74-max7-jsui.d.ts    Definition file for JSUI, MGraphics, Sketch, etc.
-            cycling74-max7-jitter.d.ts 	Definition file for using Jitter objects 
+            cycling74-max8.d.ts         Definition file for JavaScript in Max
+            cycling74-max8-jsui.d.ts    Definition file for JSUI, MGraphics, Sketch, etc.
+            cycling74-max8-jitter.d.ts 	Definition file for using Jitter objects 
 
     /JavaScript
         ExampleJS.js                JavaScript code generated from ExampleJS.ts
