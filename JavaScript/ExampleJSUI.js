@@ -1,5 +1,35 @@
-"use strict";
-var em = require("./ExampleModule");
+'use strict';
+
+// These two functions are painfully slow ;)
+function colorFn(x) {
+    return [Math.sin(x) * 0.5 + 0.5,
+        Math.sin(x + 0.333 * Math.PI) * 0.5 + 0.5,
+        Math.sin(x + 0.666 * Math.PI) * 0.5 + 0.5,
+        1.0];
+}
+function pixelFn(x, y, t, prmA, prmB) {
+    var r = Math.sin(t + x * 2.0) + Math.cos(t + y * 2.0);
+    r += Math.sin(t + x * Math.sin(t + x * 0.02) * prmA) + Math.cos(t + y * (Math.cos(t * 0.7) * 5.0)) * prmB;
+    return colorFn(r + t);
+}
+function square(x) {
+    return x * x;
+}
+var TheClass = /** @class */ (function () {
+    function TheClass(index) {
+        this.index = index;
+        post("TheClass.constructor was called with the number parameter " + index + "\n");
+    }
+    TheClass.prototype.getIndex = function () {
+        return this.index;
+    };
+    TheClass.prototype.post = function () {
+        post("TheClass: post!");
+        post();
+    };
+    return TheClass;
+}());
+
 inlets = 1;
 outlets = 1;
 autowatch = 1;
@@ -19,7 +49,7 @@ function paint() {
     m.fill();
     for (var y = 0; y < height; y += div) {
         for (var x = 0; x < width; x += div) {
-            var c = em.pixelFn(x / width, y / height, t, a, b);
+            var c = pixelFn(x / width, y / height, t, a, b);
             m.set_source_rgba(c);
             m.rectangle(x, y, x + div, y + div);
             m.fill();
@@ -42,6 +72,3 @@ function setRes(v) {
     div = Math.floor(v);
     m.redraw();
 }
-// .ts files with this at the end become a script usable in a [js] or [jsui] object
-var module = {};
-module.exports = {};

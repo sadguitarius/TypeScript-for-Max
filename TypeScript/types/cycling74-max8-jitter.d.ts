@@ -335,12 +335,12 @@ declare class JitterListener extends JitterObject {
 	 * @param object_name
 	 * @param callback
 	 */
-	constructor(object_name: string, callback: Object);
+	constructor(object_name: string, callback: object);
 
 	/**
 	 * The callback function to handle the event
 	 */
-	function: Object;
+	function: object;
 
 	/**
 	 * The object to listen to.

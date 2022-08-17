@@ -52,7 +52,3 @@ function setRes(v: number){
 	div = Math.floor(v);
 	m.redraw();
 }
-
-// .ts files with this at the end become a script usable in a [js] or [jsui] object
-let module = {};
-export = {};

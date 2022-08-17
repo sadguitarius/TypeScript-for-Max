@@ -1776,7 +1776,7 @@ declare class Image {
 // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API
 
 declare class MaxCanvas {
-	constructor(jsui: Object);
+	constructor(jsui: object);
 	getContext(type: string): CanvasRenderingContext2D;
 }
 
@@ -1950,7 +1950,7 @@ declare class CanvasRenderingContext2D {
 		ow: number,
 		oh: number
 	): void;
-	setTimeout(expression: Object, timeout: number): Task;
+	setTimeout(expression: object, timeout: number): Task;
 	clearInterval(task: Task): void;
 	setSource(style: CanvasPattern | CanvasGradient | string): void;
 	parseFontString(font: string): any[];

@@ -25,7 +25,3 @@ function msg_int(v: number)
 {
 	outlet(0, em.square(v));
 }
-
-// .ts files with this at the end become a script usable in a [js] or [jsui] object
-let module = {};
-export = {};
