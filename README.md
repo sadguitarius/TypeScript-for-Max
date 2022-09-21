@@ -49,6 +49,12 @@ Notes
 
    This tricks tsc in outputting it as a separate module file, while still allowing Max to read it as a script. Do not do this in module files. 
 
+   Alternatively, use the included Rollup config e.g. with the command
+   ```
+   rollup --config --watch
+   ```
+   in the root directory of this repository.
+
  * Make sure the compiled JavaScript files are in Max' search path, set this with `"outDir"` in your `tsconfig.json`. Make sure your TypeScript folder is not in a Max project directory or Max will mess up the file structure. 
 
  * For continuous development run `tsc --watch` in the directory with your `tsconfig.json`. The .js files are then generated on save and Max will then reload automatically.
