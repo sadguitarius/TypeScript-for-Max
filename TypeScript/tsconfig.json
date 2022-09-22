@@ -2,7 +2,7 @@
 	"compileOnSave": true,
 	"compilerOptions": {
 		"module": "CommonJS",
-		"target": "es5",
+		"target": "ES5",
 		"strict": true,
 		"noImplicitAny": true,
 		"allowUnreachableCode": true,

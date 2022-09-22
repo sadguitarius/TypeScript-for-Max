@@ -1,7 +1,11 @@
 {
-  "devDependencies": {
-    "@rollup/plugin-typescript": "^8.3.4",
-    "prettier": "2.7.1",
-    "tslib": "^2.4.0"
-  }
+	"devDependencies": {
+		"@rollup/plugin-typescript": "^8.3.4",
+		"prettier": "2.7.1",
+		"tslib": "^2.4.0"
+	},
+	"scripts": {
+		"build": "rimraf JavaScript/*.js && rollup --config",
+		"clean": "rimraf JavaScript/*.js"
+	}
 }

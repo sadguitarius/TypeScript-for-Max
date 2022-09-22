@@ -1,27 +1,21 @@
 // rollup.config.js
 import typescript from "@rollup/plugin-typescript";
 
-export default [
-	{
-		input: "TypeScript/ExampleJS.ts",
-		output: {
-			// dir: "JavaScript",
-            file: "JavaScript/ExampleJS.js",
-			format: "cjs",
-			esModule: false,
-		},
-		plugins: [typescript()],
-		treeshake: false,
+const createConfig = (filename) => ({
+	input: `TypeScript/${filename}.ts`,
+	output: {
+		file: `JavaScript/${filename}.js`,
+		format: 'cjs',
+		esModule: false,
 	},
-	{
-		input: "TypeScript/ExampleJSUI.ts",
-		output: {
-			// dir: "JavaScript",
-            file: "JavaScript/ExampleJSUI.js",
-			format: "cjs",
-			esModule: false,
-		},
-		plugins: [typescript()],
-		treeshake: false,
-	},
-];
+	plugins: [typescript()],
+	treeshake: false,
+});
+  
+const configs = [
+	'ExampleJS',
+	'ExampleJSUI',
+	'ExampleModule'
+].map((filename) => createConfig(filename));
+
+export default configs
