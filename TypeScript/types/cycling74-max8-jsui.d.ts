@@ -6,27 +6,31 @@
  * JSUI: https://docs.cycling74.com/max8/vignettes/jsuiobject
  */
 
-declare var mgraphics: MGraphics;
-declare var sketch: Sketch;
+declare let mgraphics: MGraphics;
+declare let sketch: Sketch;
 /**
  * Specific to the jsui object. The inspector property, if set to 1, causes Max to look for an inspector patch specific to your script rather than the default jsui-insp.pat file. The name used will be the name of your script (without the .js extension) plus –insp.pat. For example, if your script is called foo.js, your inspector file should be named foo-insp.pat. Inspector patches can be placed anywhere in the Max search path.
  */
-declare var inspector: number;
+declare let inspector: number;
 
 /**
  * copies the contents of this.sketch to the screen.
  */
 declare function refresh(): void;
 
+declare function gc(): void;
+
 /**
  * https://docs.cycling74.com/max8/vignettes/jsmgraphics
  */
 declare class MGraphics {
+	size: number[];
+
 	/**
 	 * Setup, State and Execution Routines
 	 */
 
-	constructor();
+	constructor(width?: number, height?: number);
 
 	/**
 	 * When autosketch is set to “1”, the drawing commands will immediately be drawn without waiting a drawing execution command. While this is convenient, it is less flexible than working with autosketch set to “0”.
@@ -45,6 +49,7 @@ declare class MGraphics {
 	 * @type {number}
 	 */
 	relative_coords: number;
+	relative_coordinates: number;
 
 	/**
 	 * The init routine is the first thing that an mgraphics-based Javascript program needs to call. It initializes the library, sets up the internal mgraphics variables and prepares the jsui object for drawing.
@@ -55,6 +60,11 @@ declare class MGraphics {
 	 * Force a redraw of the display area by calling the paint() function.
 	 */
 	redraw(): void;
+
+	/**
+	 * TODO: what's up with this?
+	 */
+	parentpaint(): void;
 
 	/**
 	 * Restore the Mgraphics system to a previously saved state.
@@ -84,9 +94,9 @@ declare class MGraphics {
 
 	/**
 	 * Given a fillable path, determine if a point is within the fill zone. Returns 0 (false) or 1 (true).
-	 * @param  ...args
+	 * @param path
 	 */
-	in_fill(...args: any[]): number;
+	in_fill(path: Path): number;
 
 	/**
 	 * Determine the enclosing rectangle for the current fill area. Returns an array that contains the top/left and bottom/right points of the fill area.
@@ -138,6 +148,14 @@ declare class MGraphics {
 	 * Retrieve the current line width as a floating-point number.
 	 */
 	get_line_width(): number;
+
+	/**
+	 * TODO: docs
+	 * @param dash0
+	 * @param dash1
+	 */
+	set_dash(dash0: number, dash1: number): void;
+	set_dash(dashes: number[]): void;
 
 	/**
 	 * Path Creation Routines
@@ -305,13 +323,13 @@ declare class MGraphics {
 	/**
 	 * Returns a copy of the current path to be stored and reused at a later time.
 	 */
-	copy_path(): void;
+	copy_path(): Path;
 
 	/**
 	 * Appends a stored path to the current path at the current end point.
 	 * @param path
 	 */
-	append_path(path: any): void;
+	append_path(path: Path): void;
 
 	/**
 	 * Define a starting point for a path execution group. This group can be used for creating an image from a set of path functions without actually drawing the results to the screen.
@@ -409,6 +427,13 @@ declare class MGraphics {
 	): void;
 
 	/**
+	 * TODO: docs
+	 * Set the color and alpha channels to be used for drawing routines.
+	 * @param rgba
+	 */
+	set_source_jrgba(rgba: number[]): void;
+
+	/**
 	 * Set the color channels to be used for drawing routines. Since the alpha channel is not provide, it is defaulted to completely opaque.
 	 * @param rgb
 	 */
@@ -451,6 +476,16 @@ declare class MGraphics {
 	): void;
 
 	/**
+	 * TODO: docs
+	 * @param attr
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 */
+	attr_setfill(attr: string, x: number, y: number, width: number, height: number): void;
+
+	/**
 	 * Modifies the transform matrix that scales all X and Y values by the values provided.
 	 *
 	 * Note: This affects everything from size to location, and also scales line widths.
@@ -464,6 +499,11 @@ declare class MGraphics {
 	 * @param rad
 	 */
 	rotate(rad: number): void;
+	/**
+	 * Modifies the transform matrix by rotating it in 3d space. The rotation values is in radians (2-pi for a complete rotation).
+	 * @param rad
+	 */
+	rotate(rad: number[]): void;
 
 	/**
 	 * Modifies the transform matrix by moving it by absolute (positive or negative) delta amounts.
@@ -531,7 +571,13 @@ declare class MGraphics {
 	 * Sets the current font face by name.
 	 * @param fontname
 	 */
-	select_font_face(fontname: string): void;
+	select_font_face(fontname: string | number): void;
+	/**
+	 * TODO: docs
+	 * @param fontname
+	 * @param args
+	 */
+	select_font_face(fontname: string | number, ...args: (string|number)[]): void;
 
 	/**
 	 * Sets the current font size, using either an integer or floating-point value.
@@ -559,7 +605,7 @@ declare class MGraphics {
 	/**
 	 * Returns an array with two values: width and height. This is the measurement of the provided text using the current font and size.
 	 */
-	text_measure(): number[];
+	text_measure(text: string): number[];
 
 	/**
 	 * Pattern Routines
@@ -618,11 +664,28 @@ declare class MGraphics {
 	pattern_create_for_surface(image: Image): Pattern;
 
 	/**
+	 * TODO: docs
+	 * @param pattern
+	 * @param index
+	 * @param r
+	 * @param g
+	 * @param b
+	 * @param a
+	 */
+	pattern_add_color_stop_rgba(pattern: Pattern, index: number, r: number, g: number, b: number, a: number): void
+
+	/**
 	 * Sets the pattern to be used for the next fill() call. The name parameter must be a previously created pattern.
 	 * @param pattern
 	 */
 	set_source(pattern: Pattern): void;
-	
+
+	/**
+	 * TODO: docs
+	 * @param pattern
+	 */
+	pattern_destroy(pattern: Pattern): void
+
 	/**
 	 * Image and Surface Routines
 	 */
@@ -648,6 +711,51 @@ declare class MGraphics {
 	 * @param surface
 	 */
 	set_source_surface(surface: MGraphicsSVG): void;
+
+	/**
+	 * Render an SVG image in the current MGraphics context.
+	 * @param svg
+	 */
+	svg_render(svg: string): void;
+	/**
+	 * TODO: docs
+	 * @param svg
+	 * @param translate_width
+	 * @param translate_height
+	 * @param scale_width
+	 * @param scale_height
+	 */
+	svg_render(svg: MGraphicsSVG,
+			   translate_width: number,
+			   translate_height: number,
+			   scale_width: number,
+			   scale_height: number
+	): void;
+
+	/**
+	 * TODO: this is a piece of garbage!
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param thing_a
+	 * @param bubblepointx
+	 * @param bubblepointy
+	 * @param bubbleside
+	 * @param bubblepoint
+	 * @param thing_b
+	 */
+	bubble(x: number,
+		   y: number,
+		   width: number,
+		   height: number,
+		   thing_a: number,
+		   bubblepointx: number,
+		   bubblepointy: number,
+		   bubbleside: number,
+		   bubblepoint: number,
+		   thing_b: number
+	): void;
 }
 
 /**
@@ -739,7 +847,7 @@ declare class Pattern {
 declare class MGraphicsSVG {
 	/**
 	 * Creates a new SVG in memory who's colors can be remapped.
-	 * @param filename 
+	 * @param filename
 	 */
 	constructor(filename: string);
 
@@ -749,12 +857,17 @@ declare class MGraphicsSVG {
 	 * @param dest_rgba desired destination color array
 	 */
 	mapcolor(source_rgba: number[], dest_rgba: number[]): void
+
+	/**
+	 * TODO: docs
+	 */
+	mapreset(): void;
 }
 
 /**
  * Sketch
  * Every instance of jsui has an instance of Sketch bound to the variable "sketch". This is often the only instance of Sketch you will need to use. However, if you want to do things like render sprites, have multiple layers of images, or use drawing commands to create alpha channels for images, then you can create additional instances to render in. By default, when any function in your jsui object has been called the context is already set for the instance of Sketch bound to the variable "sketch".
- * 
+ *
  * https://docs.cycling74.com/max8/vignettes/jssketchobject
  */
 declare class Sketch {
@@ -912,7 +1025,7 @@ declare class Sketch {
 	 * @param y4
 	 * @param z4
 	 */
-	 // TODO: test omission of z parameters
+	// TODO: test omission of z parameters
 	quad(
 		x1: number,
 		y1: number,
@@ -943,7 +1056,7 @@ declare class Sketch {
 	 * @param y4
 	 * @param z4
 	 */
-	 // TODO: test omission of z parameters
+	// TODO: test omission of z parameters
 	framequad(
 		x1: number,
 		y1: number,
@@ -1167,7 +1280,7 @@ declare class Sketch {
 	 * @param align_y
 	 */
 	textalign(
-		align_x: "left" | "right" | "center", 
+		align_x: "left" | "right" | "center",
 		align_y: "bottom" | "top" | "center"
 	): void;
 
@@ -1265,9 +1378,9 @@ declare class Sketch {
 	/**
 	 * Set the current value of the parameter specified by the parameter_name argument to be the value specified by parameter_values argument(s). Some parameters are global for the extent of a stroked path definition, while others may vary on a point by point basis.
 	 * @param parameter_name
-	 * @param ...args
+	 * @param args
 	 */
-	strokeparam(parameter_name: string, ...args: any[]): void;
+	strokeparam(parameter_name: string, ...args: number[]): void;
 
 	/**
 	 * Defines an anchor point at the location specified by the x, y, and z arguments. Some stroke styles such as "basic2d" will ignore the z coordinate.
@@ -1279,7 +1392,7 @@ declare class Sketch {
 
 	/**
 	 *  The default2d method is a simple way to set the graphics state to default properties useful for 2D graphics. It is called everytime your object is resized if default2d() has been called more recently than default3d().
-	 * 
+	 *
 	 * It is essentially equivalent to the following set of calls:
 	 * ```
 	 * with (sketch) {
@@ -1310,7 +1423,7 @@ declare class Sketch {
 
 	/**
 	 * The default3d method is a simple way to set the graphics state to default properties useful for 3D graphics. It is called everytime the jsui object is resized if default3d() has been called more recently than default2d().
-	 * 
+	 *
 	 * It is essentially equivalent to the following set of calls:
 	 * ```
 	 * with (sketch) {
@@ -1343,7 +1456,7 @@ declare class Sketch {
 
 	/**
 	 * The orth3d method is a simple way to set the graphics state to default properties useful for 3D graphics, using an orthographic projection (i.e. object scale is not affected by distance from the camera). It is called every time the jsui object is resized if ortho3d() has been called more recently than default2d(), or default3d().
-	 * 
+	 *
 	 * It is essentially equivalent to the following set of calls:
 	 * ```
 	 * with (sketch) {
@@ -1375,11 +1488,17 @@ declare class Sketch {
 	ortho3d(): void;
 
 	glbegin(draw_prim: any[]): void;
+
 	glbindtexture(image_object: string): void;
+
 	glblendfunc(src_function: string, dst_function: string): void;
+
 	glclear(): void;
+
 	glclearcolor(red: number, green: number, blue: number, alpha: number): void;
+
 	glcleardepth(depth: number): void;
+
 	glclipplane(
 		plane: number,
 		coeff1: number,
@@ -1387,20 +1506,35 @@ declare class Sketch {
 		coeff3: number,
 		coeff4: number
 	): void;
+
 	glcolor(red: number, green: number, blue: number, alpha: number): void;
+
 	glcolormask(red: number, green: number, blue: number, alpha: number): void;
+
 	glcolormaterial(face: number, mode: any[]): void;
+
 	glcullface(face: number): void;
+
 	gldepthmask(on: number): void;
+
 	gldepthrange(near: number, far: number): void;
+
 	gldisable(capability: number): void;
+
 	gldrawpixels(image: string): void;
+
 	gledgeflag(on: number): void;
+
 	glenable(capability: number): void;
+
 	glend(): void;
+
 	glfinish(): void;
+
 	glflush(): void;
+
 	glfog(parameter_name: string, value: number): void;
+
 	glfrustum(
 		left: number,
 		right: number,
@@ -1409,18 +1543,31 @@ declare class Sketch {
 		near: number,
 		far: number
 	): void;
+
 	glhint(target: string, mode: number): void;
+
 	gllight(light: string, parameter_name: string, value: number): void;
+
 	gllightmodel(parameter_name: string, value: number): void;
+
 	gllinestipple(factor: any[], bit_pattern: any[]): void;
+
 	gllinewidth(width: number): void;
+
 	glloadidentity(): void;
+
 	glloadmatrix(matrix_array: number[]): void;
+
 	gllogicop(opcode: any[]): void;
+
 	glmaterial(): void;
+
 	glmatrixmode(mode: string): void;
+
 	glmultmatrix(matrix_array: any[]): void;
+
 	glnormal(x: number, y: number, z?: number): void;
+
 	glortho(
 		left: number,
 		right: number,
@@ -1429,19 +1576,33 @@ declare class Sketch {
 		near: number,
 		far: number
 	): void;
+
 	glpointsize(size: number): void;
+
 	glpolygonmode(face: number, mode: number): void;
+
 	glpolygonoffset(factor: number, units: number): void;
+
 	glpopattrib(): void;
+
 	glpopmatrix(): void;
+
 	glpushattrib(): void;
+
 	glpushmatrix(): void;
+
 	glrect(x1: number, y1: number, x2: number, y2: number): void;
+
 	glrotate(angle: number, x: number, y: number, z?: number): void;
+
 	glscale(x_scale: number, y_scale: number, z_scale?: number): void;
+
 	glscissor(x: number, y: number, width: number, height: number): void;
+
 	glshademodel(mode: any[]): void;
+
 	gltexcoord(s: number[], t: number[]): void;
+
 	gltexenv(
 		parameter_name: string,
 		val1: string,
@@ -1449,6 +1610,7 @@ declare class Sketch {
 		val3: string,
 		val4: string
 	): void;
+
 	gltexgen(
 		coord: number[],
 		parameter_name: string,
@@ -1457,6 +1619,7 @@ declare class Sketch {
 		val3: string,
 		val4: string
 	): void;
+
 	gltexparameter(
 		parameter_name: string,
 		val1: string,
@@ -1464,7 +1627,9 @@ declare class Sketch {
 		val3: string,
 		val4: string
 	): void;
+
 	gltranslate(delta_x: number, delta_y: number, delta_z?: number): void;
+
 	glulookat(
 		eye_x: number,
 		eye_y: number,
@@ -1484,27 +1649,38 @@ declare class Sketch {
 		up_x: number,
 		up_y: number
 	): void;
+
 	gluortho2d(left: number, right: number, bottom: number, top: number): void;
+
 	gluperspective(
 		fovy: number,
 		aspect: number,
 		near: number,
 		far: number
 	): void;
+
 	glvertex(x: number, y: number, z?: number): void;
+
 	glviewport(x: number, y: number, width: number, height: number): void;
 }
 
 /**
+ * TODO: Does this need to exist? Does it need methods?
+ */
+declare class Path {
+
+}
+
+/**
  * The Image object can be used to draw images in an instance of the Sketch. It is possible to load image files from disk, create images from instances of Sketch, or generate them manually. The Image object has several methods to assist in manipulating images once generated. Note that alphablending is on by default in sketch. Certain file formats which contain alpha channels such as PICT or TIFF may have their alpha channel set all off. File formats which do not contain an alpha channel such as JPEG, by default have an alpha channel of all on. If you are having trouble seeing an image when attempting to draw in an instance of Sketch, you may want to either turn off blending with gldisable("blend"), or set the alpha channel to be all on with clearchannel("alpha",1.).
- * 
+ *
  * https://docs.cycling74.com/max8/vignettes/jsimageobject
  */
 declare class Image {
 	/**
 	 * create a new Image instance with default width and height
 	 */
-	constructor();
+	constructor(mg?: MGraphics);
 
 	/**
 	 * create a new Image instance with the specified width and height
@@ -1629,7 +1805,7 @@ declare class Image {
 	): void;
 
 	/**
-	 * Copies the channel values from the source object's channel specified by the source_channel argument to the destination object's channel specified by the destination_channel argument. The source object can only be an instance of Image (not Sketch). If the source object is not the same size as the destination object, then rectangle composed of the minimum width and height of each, is the rectangle of values which will be copied. Acceptable values for the channel arguments are the strings: "red", "green", "blue", or "alpha". 
+	 * Copies the channel values from the source object's channel specified by the source_channel argument to the destination object's channel specified by the destination_channel argument. The source object can only be an instance of Image (not Sketch). If the source object is not the same size as the destination object, then rectangle composed of the minimum width and height of each, is the rectangle of values which will be copied. Acceptable values for the channel arguments are the strings: "red", "green", "blue", or "alpha".
 	 * @param source_object
 	 * @param source_channel
 	 * @param destination_channel
@@ -1721,7 +1897,7 @@ declare class Image {
 	 * Sets the pixel value at the specified location. Color values are floating point numbers in the range 0.-1.
 	 * @param x
 	 * @param y
-	 * @param r[]} rgb
+	 * @param rgb
 	 * @param a
 	 */
 	setpixel(x: number, y: number, rgb: number[], a?: number): void;
@@ -1777,6 +1953,7 @@ declare class Image {
 
 declare class MaxCanvas {
 	constructor(jsui: object);
+
 	getContext(type: string): CanvasRenderingContext2D;
 }
 
@@ -1838,11 +2015,17 @@ declare class CanvasRenderingContext2D {
 	width: number;
 
 	constructor(maxCanvas: MaxCanvas);
+
 	save(): void;
+
 	restore(): void;
+
 	scale(x: number, y: number): void;
+
 	rotate(x: number): void;
+
 	translate(x: number, y: number): void;
+
 	transform(
 		m11: number,
 		m12: number,
@@ -1851,6 +2034,7 @@ declare class CanvasRenderingContext2D {
 		dx: number,
 		dy: number
 	): void;
+
 	setTransform(
 		m11: number,
 		m12: number,
@@ -1859,12 +2043,14 @@ declare class CanvasRenderingContext2D {
 		dx: number,
 		dy: number
 	): void;
+
 	createLinearGradient(
 		x0: number,
 		y0: number,
 		x1: number,
 		y1: number
 	): CanvasGradient;
+
 	createRadialGradient(
 		x0: number,
 		y0: number,
@@ -1873,18 +2059,28 @@ declare class CanvasRenderingContext2D {
 		y1: number,
 		r1: number
 	): CanvasGradient;
+
 	createPattern(
 		image: Image,
 		repetition: "repeat" | "repeat-x" | "repeat-y" | "no-repeat"
 	): CanvasPattern;
+
 	clearRect(x: number, y: number, w: number, h: number): void;
+
 	fillRect(x: number, y: number, w: number, h: number): void;
+
 	strokeRect(x: number, y: number, w: number, h: number): void;
+
 	beginPath(): void;
+
 	closePath(): void;
+
 	moveTo(x: number, y: number): void;
+
 	lineTo(x: number, y: number): void;
+
 	quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): void;
+
 	bezierCurveTo(
 		cp1x: number,
 		cp1y: number,
@@ -1893,8 +2089,11 @@ declare class CanvasRenderingContext2D {
 		x: number,
 		y: number
 	): void;
+
 	arcTo(x1: number, y1: number, x2: number, y2: number, radius: number): void;
+
 	rect(x: number, y: number, w: number, h: number): void;
+
 	arc(
 		x: number,
 		y: number,
@@ -1903,12 +2102,19 @@ declare class CanvasRenderingContext2D {
 		endAngle: number,
 		anticlockwise: number
 	): void;
+
 	fill(): void;
+
 	stroke(): void;
+
 	isPointInPath(x: number, y: number): boolean;
+
 	fillText(text: string, x: number, y: number, maxWidth: number): void;
+
 	strokeText(text: string, x: number, y: number, maxWidth: number): void;
+
 	measureText(text: string): number;
+
 	drawImage(image: Image, dx: number, dy: number): void;
 	drawImage(
 		image: Image,
@@ -1928,8 +2134,10 @@ declare class CanvasRenderingContext2D {
 		dw: number,
 		dh: number
 	): void;
+
 	createImageData(sw: number, sh: number): ImageData;
 	createImageData(imagedata: ImageData): ImageData;
+
 	//getImageData(): ... not yet implemented in CanvasExtension.js
 	putImageData(
 		imagedata: ImageData,
@@ -1940,8 +2148,11 @@ declare class CanvasRenderingContext2D {
 		not_used_dirtyWidth: number,
 		not_used_dirtyHeight: number
 	): void;
+
 	redraw(): void;
+
 	paint(): void;
+
 	roundedRect(
 		x: number,
 		y: number,
@@ -1950,11 +2161,17 @@ declare class CanvasRenderingContext2D {
 		ow: number,
 		oh: number
 	): void;
+
 	setTimeout(expression: object, timeout: number): Task;
+
 	clearInterval(task: Task): void;
+
 	setSource(style: CanvasPattern | CanvasGradient | string): void;
+
 	parseFontString(font: string): any[];
+
 	getTextAlign(textString: string): number;
+
 	getTextBaseline(): number;
 }
 
@@ -1990,6 +2207,7 @@ declare class ImageData {
 
 declare class CanvasPixelArray {
 	readonly length: number;
+
 	array(index: number): number;
 	array(index: number, value: number): void;
 }
@@ -2000,12 +2218,15 @@ declare class CanvasPixelArray {
 
 declare class RGBAColor {
 	constructor(color: string, globalAlpha: number);
+
 	readonly ok: boolean;
 	r: number;
 	g: number;
 	b: number;
 	a: number;
+
 	toRGB(): string;
+
 	toHex(): string;
 }
 

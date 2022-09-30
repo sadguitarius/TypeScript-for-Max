@@ -3,5 +3,4 @@
 *.sublime-workspace
 .idea
 node_modules
-.prettierrc.json
-JavaScript/*.js
+JavaScript/**/*.js

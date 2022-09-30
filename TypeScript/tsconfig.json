@@ -1,17 +1,15 @@
 {
 	"compileOnSave": true,
 	"compilerOptions": {
-		"module": "CommonJS",
 		"target": "ES5",
-		"strict": true,
-		"noImplicitAny": true,
-		"allowUnreachableCode": true,
-		"sourceMap": false,
-		"lib": [ "es7" ],
-		"outDir": "../JavaScript/"
+		"module": "CommonJS",
+		"types": [],
+		"lib": ["ES7"],
+		"outDir": "../JavaScript"
 	},
 	"include": [
-		"./*.ts", 
-		"./types/*.d.ts"
+		"./**/*.ts",
+		"./types/*.d.ts",
+		"../.eslintrc.cjs"
 	]
 }

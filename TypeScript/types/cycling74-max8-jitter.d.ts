@@ -8,11 +8,11 @@
  */
 declare class JitterObject extends Maxobj {
 	/**
-	 * Creates Jitter objects. (use JitterMatrix for jit.matrix) 
+	 * Creates Jitter objects. (use JitterMatrix for jit.matrix)
 	 * @param object_name
-	 * @param  ...params
+	 * @param params
 	 */
-	constructor(object_name: string, ...params: any[]);
+	constructor(object_name: string, ...params: (string | number)[]);
 
 	/**
 	 * Deletes the JitterObject
@@ -29,7 +29,7 @@ declare class JitterObject extends Maxobj {
  * http://max-javascript-reference.tim-schenk.de/symbols/JitterMatrix.html
  */
 declare class JitterMatrix extends JitterObject {
-	constructor(...args: any[]);  	// TODO:
+	constructor(...args: (string | number)[]);  	// TODO:
 									// From JitterReposUtils.js:
 									// var s = new JitterMatrix(2, "long", x, y);
 
@@ -43,22 +43,22 @@ declare class JitterMatrix extends JitterObject {
 	/**
 	 * The dimensions of matrix data.
 	 */
-	dim: any;
+	dim: number[];
 
 	/**
 	 * The byte stride per dimension.
 	 */
-	dimstride: any;
+	dimstride: number[];
 
 	/**
 	 * The destination dimension end position. (default = all dim values minus 1)
 	 */
-	dstdimend: any;
+	dstdimend: number[];
 
 	/**
 	 * The destination dimension start position. (default = all 0)
 	 */
-	dstdimstart: any;
+	dstdimstart: number[];
 
 	/**
 	 * Matrix interpolation flag. (default = 0) When the flag is set, the input matrix will be interpolated when copied to the internal matrix.
@@ -78,7 +78,7 @@ declare class JitterMatrix extends JitterObject {
 	/**
 	 * Maps input places to output planes. (default = 0 1 2 3 ...)
 	 */
-	planemap: any;
+	planemap: number[];
 
 	/**
 	 * Total byte size of matrix.
@@ -88,22 +88,22 @@ declare class JitterMatrix extends JitterObject {
 	/**
      * The source dimension end position. (default = all dim values minus 1)
 	 */
-	srcdimend: any;
+	srcdimend: number[];
 
 	/**
 	 * The source dimension start position. (default = all 0)
 	 */
-	srcdimstart: any;
+	srcdimstart: number[];
 
 	/**
 	 * The matrix data type. (default = char)
 	 *
      * --char: Char data (0-255)
-	 * 
+	 *
      * --long: Long data
-	 * 
+	 *
      * --float32: 32-bit floating-point data
-	 * 
+	 *
      * --float64: 64-bit floating-point data
 	 */
 	type: string;
@@ -138,15 +138,15 @@ declare class JitterMatrix extends JitterObject {
 
 	/**
 	 * Exports a matrix as a QuickTime movie. The exportmovie message takes an optional argument to specify a file name. If no filename is specified, a file dialog will open to let you choose a file.
-	 * 
+	 *
 	 * The default FPS is 30. frames per second
-	 * 
+	 *
 	 * The default codec is raw. Supported codecs are raw, cinepak, graphics, animation, video, componentvideo, jpeg, mjpega, mjpegb, sgi, planarrgb, macpaint, gif, photocd, qdgx, avrjpeg, opendmljpeg, bmp, winraw, vector, qd, h261, h263, dvntsc, dvpal, dvprontsc, dvpropal, flc, targa, png, tiff, componentvideosigned, componentvideounsigned, cmyk, microsoft, sorenson, indeo4, argb64, rgb48, alphagrey32, grey16, mpegyuv420, yuv420, and sorensonyuv9.
-	 * 
+	 *
 	 * The default quality is max. Supported quality settings are lossless, max, min, low, normal, and high.
-	 * 
+	 *
 	 * Note that minimum quality is, in many cases, the codec's default quality. Use "low" quality for consistent results.
-	 * 
+	 *
 	 * The default timescale is 600 units per second.
 	 * @param filename
 	 * @param FPS
@@ -209,12 +209,13 @@ declare class JitterMatrix extends JitterObject {
 
 	/**
 	 * The word op, followed by the name of a jit.op object operator and a set of values, is equivalent to including a jit.op object with the specified operator set as an attribute and this jit.matrix object specified as the output matrix. The additional value arguments may either be a matrix name or a constant. If only one value argument is provided, this matrix is considered both the output and the left operand. For example, "op + foo bar" is equivalent to the operation thismatrix = foo + bar, and "op * 0.5" is equivalent to the operation thismatrix = thismatrix * 0.5.
-	 * @param ...params
+	 * @param operator
+	 * @param params
 	 */
-	op(...params: any[]): void;
+	op(operator: string, ...params: number[]): void;
 
 	/**
-	 * Reads Jitter binary data files (.jxf) into a matrix set. If no filename is specified, a file dialog will open to let you choose a file. 
+	 * Reads Jitter binary data files (.jxf) into a matrix set. If no filename is specified, a file dialog will open to let you choose a file.
 	 * @param filename
 	 */
 	read(filename?: string): void;
@@ -238,7 +239,7 @@ declare class JitterMatrix extends JitterObject {
 	/**
 	 * The word setcell1d, followed by a number specifying an x coordinate and a list of values, is similar to the setcell message but without the need to use a "val" token to separate the coordinates from the value since the dimension count (1) is fixed.
 	 * @param x
-	 * @param ...params
+	 * @param params
 	 */
 	setcell1d(x: number, ...params: number[]): void;
 
@@ -246,7 +247,7 @@ declare class JitterMatrix extends JitterObject {
 	 * The word setcell2d, followed by a pair of numbers specifying x and y coordinates and a list of values, is similar to the setcell message but without the need to use a "val" token to separate the coordinates from the value since the dimension count (2) is fixed.
 	 * @param x
 	 * @param y
-	 * @param ...params
+	 * @param params
 	 */
 	setcell2d(x: number, y: number, ...params: number[]): void;
 
@@ -255,14 +256,14 @@ declare class JitterMatrix extends JitterObject {
 	 * @param x
 	 * @param y
 	 * @param z
-	 * @param ...params
+	 * @param params
 	 */
 	setcell3d(x: number, y: number, z: number, ...params: number[]): void;
-	
+
 	/**
 	 * The word setplane1d, followed by a number specifying an x coordinate, a number specifying a plane, and a value, is similar to the setcell message but without the need to use a "val" token to separate the coordinates from the value since the dimension count (1) is fixed, or use the "plane" token to specify which plane to set.
 	 * @param x
-	 * @param ...params
+	 * @param params
 	 */
 	setplane1d(x: number, ...params: number[]): void;
 
@@ -270,7 +271,7 @@ declare class JitterMatrix extends JitterObject {
 	 * The word setplane2d, followed by a pair of numbers specifying x and y coordinates, a number specifying a plane, and a value, is similar to the setcell message but without the need to use a "val" token to separate the coordinates from the value since the dimension count (2) is fixed, or use the "plane" token to specify which plane to set.
 	 * @param x
 	 * @param y
-	 * @param ...params
+	 * @param params
 	 */
 	setplane2d(x: number, y: number, ...params: number[]): void;
 
@@ -279,13 +280,13 @@ declare class JitterMatrix extends JitterObject {
 	 * @param x
 	 * @param y
 	 * @param z
-	 * @param ...params
+	 * @param params
 	 */
 	setplane3d(x: number, y: number, z: number, ...params: number[]): void;
 
 	/**
 	 * Sets all cells to the value specified by value(s). Position is specified of a list whose length is equal to the number of dimensions (dimcount) and outputs the data.
-	 * @param ...params
+	 * @param params
 	 */
 	val(...params: number[]): void;
 
@@ -323,10 +324,9 @@ declare class JitterReposUtils {
 	static upsample2d(inmat: JitterMatrix, x: number, y: number) : JitterMatrix;
 }
 
-
 /**
  * JitterListener
- * JitterListener objects take two arguments: the object that they “listen” to, and the function that will be called when the object triggers an event. Our JitterListener object is set to listen to our jit.window object (mywindow). The getregisteredname() property of a JitterObject object returns the name by which that object can be accessed by the JitterListener (in the case of jit.window objects, this will be the same as name of the drawing context). Whenever our jit.window object generates an event, a function called thecallback() will be triggered in our JavaScript code. Now that we’ve instantiated a JitterListener, we can (in most cases) leave it alone and simply deal with the mechanics of the callback function it triggers in response to an event from the object it listens to. 
+ * JitterListener objects take two arguments: the object that they “listen” to, and the function that will be called when the object triggers an event. Our JitterListener object is set to listen to our jit.window object (mywindow). The getregisteredname() property of a JitterObject object returns the name by which that object can be accessed by the JitterListener (in the case of jit.window objects, this will be the same as name of the drawing context). Whenever our jit.window object generates an event, a function called thecallback() will be triggered in our JavaScript code. Now that we’ve instantiated a JitterListener, we can (in most cases) leave it alone and simply deal with the mechanics of the callback function it triggers in response to an event from the object it listens to.
  * http://max-javascript-reference.tim-schenk.de/symbols/JitterListener.html
  */
 declare class JitterListener extends JitterObject {
@@ -351,28 +351,29 @@ declare class JitterListener extends JitterObject {
 	 * Unknown
 	 */
 	subjectname: string;
-} 	
+}
 
+// TODO: fix types
 
 /**
  * JitterGUIUtils
  * classes for managing 3D UI objects.
- * http://max-javascript-reference.tim-schenk.de/symbols/JitterGUIUtils.html 
+ * http://max-javascript-reference.tim-schenk.de/symbols/JitterGUIUtils.html
  */
-declare class JitterGUIUtils { 	
+declare class JitterGUIUtils {
 	static trackers: JitterGUITracker[];
-	static add_client(dest: any, newclient: any): any;
+	static add_client(dest: JitterGUIElement, newclient: JitterGUIElement): void;
 	/**
 	 * add tracker for a given destination.
 	 * @param dest
 	 */
-	static add_tracker(dest: any): any;
-	static delete_bogus_clients(dest: any): any;
+	static add_tracker(dest: JitterGUIElement): void;
+	static delete_bogus_clients(dest: JitterGUIElement): void;
 	/**
 	 * init tracker for a given destination.
-	 * @param dest 
+	 * @param dest
 	 */
-	static init(dest: any): any;
+	static init(dest: JitterGUIElement): void;
 }
 
 
@@ -382,22 +383,22 @@ declare class JitterGUIUtils {
  * http://max-javascript-reference.tim-schenk.de/symbols/JitterGUITracker.html
  */
 declare class JitterGUITracker {
- 	constructor(dest: any);
-	add_client(newclient: any): any;
+ 	constructor(dest: JitterGUIElement);
+	add_client(newclient: JitterGUIElement): void;
 	/**
 	 *  Call before handling events. Delete any clients which have been deleted in the patcher.
 	 */
-	delete_bogus_clients(): any;
+	delete_bogus_clients(): JitterGUIElement;
 	/**
 	 *  Called when adding a new client. Delete any old clients matching new one.
 	 * @param newclient
 	 */
-	delete_duplicate_clients(newclient: any): any;
+	delete_duplicate_clients(newclient: JitterGUIElement): void;
 	/**
 	 *  Make a new listener if needed. Otherwise just set destination.
 	 */
-	make_listener(): any;
-} 	
+	make_listener(): void;
+}
 
 
 /**
@@ -408,7 +409,7 @@ declare class JitterEvent {
 	/**
 	 * depends on event type
 	 */
-	args: any;
+	args: (number|string)[];
 
 	/**
 	 * Name of the event to be handled
@@ -428,30 +429,30 @@ declare class JitterEvent {
  * http://max-javascript-reference.tim-schenk.de/symbols/JitterGUIElement.html
  */
 declare class JitterGUIElement {
-	constructor(mobj: any);
+	constructor(mobj: Maxobj);
 	delete_me: any;
 	destination: any;
 	frontmost: any;
 	highlight: any;
 	intersect: any;
 	jitterobj: JitterObject;
-	localint: number[];	 	
+	localint: number[];
 	maxobj: Maxobj;
 	stilldown: any;
 
 	/**
 	 * Set true to get events even if we are behind another object
-	 */	
+	 */
 	unblockable: boolean;
 	unique_index: any;
 	val: number;
 	was_frontmost: any;
-	worldint: number[];	
+	worldint: number[];
 	drawto(destination: any): void;
 	free(): void;
 
 	/**
-	 * Return the intersection of the unit quad in world space with the line defined by raystart and rayend. Pass intersect in world coordinates back to the caller in p1. Stores local and world intersections locally. 
+	 * Return the intersection of the unit quad in world space with the line defined by raystart and rayend. Pass intersect in world coordinates back to the caller in p1. Stores local and world intersections locally.
 	 * @param raystart
 	 * @param rayend
 	 * @param p1
@@ -459,7 +460,7 @@ declare class JitterGUIElement {
 	get_intersect(raystart: any, rayend: any, p1: any): any;
 
 	/**
-	 * Handle a UI event. 
+	 * Handle a UI event.
 	 * @param event
 	 */
 	handle_event(event: JitterEvent): any;
@@ -471,8 +472,8 @@ declare class JitterGUIElement {
 	init(destination: any): any;
 
 	/**
-	 * Parse jitter-style js arguments. If attr name is a property of JitterGUIElement, set the property. Otherwise set attribute of our jitter object. 
-	 * @param ...args
+	 * Parse jitter-style js arguments. If attr name is a property of JitterGUIElement, set the property. Otherwise set attribute of our jitter object.
+	 * @param args
 	 */
 	set_attr_args(...args: any[]): void;
 
@@ -487,9 +488,9 @@ declare class JitterGUIElement {
 
 /**
  * Jitter3dUtils
- * 
+ *
  * http://max-javascript-reference.tim-schenk.de/symbols/Jitter3dUtilsInterface.html
- * 
+ *
  * Max folder/jsextensions/jitter/Jitter3DUtils.js
  */
 
@@ -548,7 +549,7 @@ declare class Jitter3DUtils {
 	 * @param p1
 	 */
 	static intersect_line_sphere(line_a: number[], line_b: number[], center: number[], r: number, p1: number[]): boolean;
-	
+
 	static normalize_quat(q: number[]): void;
 
 	/**
@@ -601,7 +602,7 @@ declare class Jitter3DUtils {
 	 * Distance-squared function
 	 * @param v
 	 */
-	static vlength(v: number[]): number; 	
+	static vlength(v: number[]): number;
 
 	/**
 	 * Cheaper distance-squared function

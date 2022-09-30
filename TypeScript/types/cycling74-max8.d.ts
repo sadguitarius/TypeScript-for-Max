@@ -11,57 +11,58 @@
 /**
  * Specifies how many inlets an instance should have. The inlets property must be set in the global code to have any effect. If it isn't set, an object with one inlet will be created.
  */
-declare var inlets: number;
+declare let inlets: number;
 /**
  * Specifies how many inlets an instance should have. The inlets property must be set in the global code to have any effect. If it isn't set, an object with one inlet will be created.
  */
-declare var outlets: number;
+declare let outlets: number;
 /**
  * Turns on the automatic file recompilation feature where a file is reloaded and recompiled if it changes. This is particularly useful during development of your Javascript code if you have several js instances using the same source file and you want them all to update when the source changes. It can also be used to facilitate the use of an external text editor. When the text editor saves the file, the js object will notice and recompile it. By default, the value of autowatch is 0 (off). If you want to turn on autowatch, it is best to do so in your global code.
  */
-declare var autowatch: number;
+declare let autowatch: number;
 /**
  * Allows access to the arguments typed into your object when it was instantiated. The filename is jsarguments[0], the first typed-in argument is jsarguments[1]. The number of arguments plus one is jsarguments.length. jsarguments[] is available in global code and any function. It never changes after an object is instantiated, unless the Max js object receives the jsargs message with new typed-in arguments.
  */
-declare var jsarguments: any[];
-declare var arguments: IArguments;
-declare var box: Maxobj;
+declare let jsarguments: (number|string)[];
+// eslint-disable-next-line no-shadow-restricted-names
+declare let arguments: IArguments;
+declare let box: Box;
 /**
  * Controls the size of the font shown in the text editing window where you edit a script in points. By assigning the editfontsize property in your global code, you can override the default font size setting for text editing, which is the same size as the text shown in the Max window.
  */
-declare var editfontsize: number;
+declare let editfontsize: number;
 /**
  * During the execution of a function, the inlet property reports the inlet number that received the message that triggered the function, starting at 0 for the leftmost inlet. This property’s value is 0 within global code.
  */
-declare var inlet: number;
-declare var max: Max;
+declare let inlet: number;
+declare let max: Max;
 /**
  * Returns "js" (the standard Javascript class property returns "jsthis”)
  */
-declare var maxclass: "js";
+declare let maxclass: "js";
 /**
  * The name of the message to the js object that invoked the method currently running. In global code, this is a nil value. This is generally useful only from within an anything() function that will be called when no specific function name matches the message sent to the js object. Here is an example of an anything() function that adds a property to a variable declared in global code. Note the use of the tricky Javascript bracket notation to specify a variable property.
  */
-declare var messagename: string;
+declare let messagename: string;
 /**
  * Access to the patcher containing the js object. See the Patcher Object for more information on this object.
  */
-declare var patcher: Patcher;
+declare let patcher: Patcher;
 /**
  * Sends a red tinged message to the Max window.
  * @param message
  */
-declare function error(message: any): void;
+declare function error(message: string | (string|number)[]): void;
 /**
  * Prints a message to the system console window. See post() below for further details about arguments.
  * @param message
  */
-declare function cpost(message?: any): void;
+declare function cpost(message?: string | (string|number)[]): void;
 /**
  * Prints a representation of the arguments in the Max window. If post() has no arguments, it prints starting on the next line. Otherwise it prints the input on the current line separated by spaces. Arrays are unrolled to one level as with outlet.
- * @param message
+ * @param arguments
  */
-declare function post(message?: any): void;
+declare function post(...arguments: (string|number)[]): void;
 /**
  * Sends a message to the named Max object. A named Max object is an object associated with a global symbol (not an object with a patcher-specific name). For example, Max receive objects are bound to global symbols. The following code would send the message bang to the named object flower.
  * @param object_name
@@ -78,12 +79,12 @@ declare function messnamed(
  * @param message
  * @param arguments
  */
-declare function arrayfromargs(message: string, arguments: IArguments): any[];
+declare function arrayfromargs(message: string, arguments: IArguments): (string|number)[];
 /**
  * Sets the patcher assist string for a designated inlet or outlet of a js object box. Designed to be called from the assistance function specified as an argument to the setinletassist() or setoutletassist() method (see example under setoutletassist() below).
  * @param arguments
  */
-declare function assist(arguments: any): void;
+declare function assist(arguments: string | (string|number)[]): void;
 /**
  * Declare an attribute which can be set, queried, and optionally stored in the patcher file. The attributename, argument is required, but the following arguments are optional. If no getterr or setter methods are specified, default ones will be used. These attributes can also be referenced by pattr. A few example uses are below.
  * @param attributenamex
@@ -104,7 +105,7 @@ declare function declareattribute(
  * @param method_name
  * @param arguments
  */
-declare function embedmessage(method_name: string, ...arguments: any[]): void;
+declare function embedmessage(method_name: string, ...arguments: (string|number)[]): void;
 /**
  * Notifies any clients (such as the pattr family of objects), that the object’s current value has changed. Clients can then take appropriate action such as sending a js instance the message getvalueof to invoke the getvalueof() method (if defined – see the special function names listed above for more information). The notifyclients() method is useful for objects that define setvalueof() and getvalueof() functions for pattr compatibility.
  */
@@ -114,19 +115,19 @@ declare function notifyclients(): void;
  * @param outlet_number
  * @param arguments
  */
-declare function outlet(outlet_number: number, ...arguments: any[]): void;
+declare function outlet(outlet_number: number, ...arguments: (string|number)[]): void;
 /**
  * Associates either a number, string, or function with the numbered inlet (starting at 0 for the left inlet). If -1 is passed as the inlet number, the object argument is used for all inlets. In order to produce any assistance text in the patcher window the assistance function needs to call the assist() method described above. See example at setoutletassist() below. The setinletassist() and setoutletassist() functions are best called in global code but can be called at any time. You can even replace the assistance function or string dynamically.
  * @param inlet_number
  * @param object
  */
-declare function setinletassist(inlet_number: number, object: any): void;
+declare function setinletassist(inlet_number: number, object: number|string|((...args: (number|string)[]) => void)): void;
 /**
  * Associates either a number, string, or function with the numbered outlet (starting at 0 for the left outlet). If -1 is passed as the outlet number, the object argument is used for all outlets. In order to produce any assistance in the patcher, the assistance function needs to call the assist() method described above.
  * @param outlet_number
  * @param object
  */
-declare function setoutletassist(outlet_number: number, object: any): void;
+declare function setoutletassist(outlet_number: number, object: number|string|((...args: (number|string)[]) => void)): void;
 
 /**
  * The Buffer object in JavaScript is a companion to the buffer~ object you instantiate in Max patchers, and provides the ability to access samples and metadata for the buffer~ object with the associated name.
@@ -181,7 +182,7 @@ declare class Buffer {
 	 * @param message_name
 	 * @param arguments
 	 */
-	send(message_name: string, ...arguments: any[]): void;
+	send(message_name: string, ...arguments: (number|string)[]): void;
 }
 
 /**
@@ -211,7 +212,7 @@ declare class Dict {
 	 * @param key   [symbol]
 	 * @param value [list]
 	 */
-	append(key: string, value: any[]): void;
+	append(key: string, value: (number|string)[]): void;
 
 	/**
 	 * Erase the contents of the dictionary, restoring to a clean state
@@ -234,12 +235,12 @@ declare class Dict {
 	 * Return the value associated with a key.
 	 * @param  key    [symbol]
 	 */
-	get(key: string): any;
+	get(key: string): number|string|(number|string)[];
 
 	/**
 	 * Return a list of all the keys in a dictionary.
 	 */
-	getkeys(): any[];
+	getkeys(): string[];
 
 	/**
 	 * Return a list of all the dictionaries that currently exist.
@@ -292,21 +293,21 @@ declare class Dict {
 	 * @param key   [symbol]
 	 * @param value [list]
 	 */
-	replace(key: string, value: any[]): void;
+	replace(key: string, value: number|string|(number|string)[]): void;
 
 	/**
 	 * Set the value for a key to a specified value.
 	 * @param key   [symbol]
 	 * @param value [list]
 	 */
-	set(key: string, value: any[]): void;
+	set(key: string, value: number|string|(number|string)[]): void;
 
 	/**
 	 * Set the value for a key to dictionary content defined using JSON.
 	 * @param key   [symbol]
 	 * @param value [list]
 	 */
-	setparse(key: string, value: any[]): void;
+	setparse(key: string, value: string): void;
 
 	/**
 	 * Open a save dialog to write the dictionary contents to a file.
@@ -353,7 +354,7 @@ declare class File {
 	 * filename can be a file in the Max search path, an absolute path, or a relative path. Acceptable values for access can be "read", "write", or "readwrite". The default value for access is "read". Acceptable values for typelist are four character filetype codes listed in the file max-fileformats.txt, which is located at /Library/Application Support/Cycling ’74 on Macintosh and C:\Program Files\Common Files\Cycling ’74 on Windows. By default, typelist is empty. If able to, the File constructor opens the file specified by filename, provided it is one of the types in typelist.
 	 * @param filename
 	 * @param access
-	 * @param tring} typelist
+	 * @param typelist
 	 */
 	constructor(
 		filename: string,
@@ -629,8 +630,7 @@ declare class LiveAPI {
 	 * Technical note: you cannot use the LiveAPI object in JavaScript global code. Use the live.thisdevice object to determine when your Max Device has completely loaded (the object sends a bang from its left outlet when the Device is fully initialized, including the Live API).
 	 *
 	 * Legacy note: previous versions of the LiveAPI object required the jsthis object's this.patcher property as the first argument. For backward-compatibility, this first argument is still supported, but is no longer necessary.
-	 * @param callback
-	 * @param name
+	 * @param path
 	 */
 
 	constructor(path: string);
@@ -688,7 +688,7 @@ declare class LiveAPI {
 	/**
 	 * The patcher of the LiveAPI object, as passed into the Constructor.
 	 */
-	readonly patcher: any;
+	readonly patcher: string;
 
 	/**
 	 * The count of children of the object at the current path, as specified by the child argument.
@@ -706,27 +706,27 @@ declare class LiveAPI {
 	 * Returns the value or list of values of the specified property of the current object.
 	 * @param property
 	 */
-	get(property: string): any;
+	get(property: string): number|string|(number|string)[];
 
 	/**
 	 * Returns the value or list of values of the specified property of the current object as a String object.
 	 * @param property
 	 */
-	getstring(property: string): String;
+	getstring(property: string): string;
 
 	/**
 	 * Sets the value or list of values of the specified property of the current object.
 	 * @param property
 	 * @param value
 	 */
-	set(property: string, value: any): void;
+	set(property: string, value: number|string|(number|string)[]): void;
 
 	/**
 	 * Calls the given function of the current object, optionally with a list of arguments.
 	 * @param func
 	 * @param arguments
 	 */
-	call(func: string, arguments: any): void;
+	call(func: string, ...arguments: (number|string)[]): void;
 }
 
 declare class Db {
@@ -839,7 +839,7 @@ declare class Max {
 	 * Returns the value of the attribute specified by attribute_name. Lists are returned as JS Array objects.
 	 * @param attribute_name
 	 */
-	getattr(attribute_name: string): any[];
+	getattr(attribute_name: string): (number|string)[];
 
 	/**
 	 * Sets the value of the attribute specified by attribute_name.
@@ -923,7 +923,7 @@ declare class Max {
 	 * The word externaleditor followed by a symbol sets the text editor used for editing text file content - such as saved coll files, text files and Javascript code.
 	 * @param editor
 	 */
-	externaleditor(editor: String): void;
+	externaleditor(editor: string): void;
 
 	/**
 	 * List all of the external objects currently loaded in the Max Console.
@@ -1157,10 +1157,10 @@ declare class Max {
 
 	/**
 	 * The word runtime, followed by a zero or one and a message, executes the message if the current version of Max is a runtime version (1) or non-runtime (0).
-	 * @param isRunstime
-	 * @param ...message
+	 * @param isRuntime
+	 * @param message
 	 */
-	runtime(isRunstime: 0 | 1, ...message: any[]): void;
+	runtime(isRuntime: 0 | 1, message: string): void;
 
 	/**
 	 * The word sendinterval, followed by a symbol, sends the current scheduler interval to the receive object named by the symbol.
@@ -1288,15 +1288,15 @@ declare class Max {
 	/**
 	 * The word midi, followed by a variable-length message, allows messages to be sent to configure the system MIDI object.
 	 * TODO: find out options
-	 * @param ...message
+	 * @param message
 	 */
-	midi(...message: any[]): void;
+	midi(...message: (number|string)[]): void;
 
 	/**
 	 * innum specifies an input port, outnum specifies an output port, portname is the name of the port as a single symbol (i.e. It is necessary to use double quotes). An abbrev value is 0 for no abbrev (- in menu), 1 for 'a' and 26 for 'z'.
-	 * @param ...message
+	 * @param message
 	 */
-	portabbrev(...message: any[]): void; // TODO: Documentation is unclear
+	portabbrev(...message: (number|string)[]): void; // TODO: Documentation is unclear
 
 	/**
 	 * Enables (1) or disables (0) the port specified by portname. All ports are enabled by default.
@@ -1307,9 +1307,9 @@ declare class Max {
 
 	/**
 	 * Similar to portabbrev, but offset is the channel offset added to identify input or output ports when a MIDI object can send to or receive from multiple ports by channel number. Must be a multiple of 16 (e.g. max midi portoffset innum PortA 16 sets the channel offset for PortA device to 16).
-	 * @param ...message
+	 * @param message
 	 */
-	portoffset(...message: any[]): void;
+	portoffset(...message: (number|string)[]): void;
 }
 
 /**
@@ -1333,7 +1333,7 @@ declare class Maxobj {
 	/**
 	 * The Patcher object that contains the Maxobj
 	 */
-	readonly patcher: any;
+	readonly patcher: Patcher;
 
 	/**
 	 * Is the object set to be hidden in a locked patcher?
@@ -1348,7 +1348,7 @@ declare class Maxobj {
 	/**
 	 * If there is another object after this one in the Patcher's list of objects, this property returns it, otherwise it returns a nil value
 	 */
-	readonly nextobject: any;
+	readonly nextobject: Maxobj;
 
 	/**
 	 * The patcher-specific name of the object, as set with the Name... dialog
@@ -1379,7 +1379,7 @@ declare class Maxobj {
 	 * If the Maxobj refers to an object is of Max class js, this returns the associated jsthis object
 	 * TODO: Correct return type
 	 */
-	readonly js: any;
+	readonly js: Maxobj;
 
 	/**
 	 * Returns whether the Maxobj refers to a valid Max object
@@ -1389,9 +1389,9 @@ declare class Maxobj {
 	/**
 	 * Sends the object the message specified by the string, followed by any additional arguments provided. This is useful for sending messages to object which dynamically dispatch messages with the “anything” message, as is the case for instances of js, jsui, lcd, and others.
 	 * @param message
-	 * @param ...anything
+	 * @param anything
 	 */
-	message(message: string, ...anything: any[]): void;
+	message(message: string, ...anything: (number|string)[]): void;
 
 	/**
 	 * Opens a help file describing the object, if it exists
@@ -1419,7 +1419,7 @@ declare class Maxobj {
 	 * Returns the value of the attribute specified by attribute_name. Lists are returned as JS Array objects.
 	 * @param attribute_name
 	 */
-	getattr(attribute_name: string): any[];
+	getattr(attribute_name: string): number|string|(number|string)[];
 
 	/**
 	 * Sets the value of the attribute specified by attribute_name.
@@ -1552,9 +1552,9 @@ declare class Patcher {
 	 * a = patcher.newobject("toggle", 122, 90, 15, 0)
 	 * ```
 	 * @param classname
-	 * @param ...params
+	 * @param params
 	 */
-	newobject(classname: string, ...params: any[]): Maxobj;
+	newobject(classname: string, ...params: (number|string)[]): Maxobj;
 
 	/**
 	 * Creates a new object of class classname in a patcher using the specified parameters and return a Maxobj (see below) that represents it.
@@ -1573,13 +1573,13 @@ declare class Patcher {
 	 * @param left
 	 * @param top
 	 * @param classname
-	 * @param ...args
+	 * @param args
 	 */
 	newdefault(
 		left: number,
 		top: number,
 		classname: string,
-		...args: any[]
+		...args: (number|string)[]
 	): Maxobj;
 
 	// TODO: Are from_object: any actually strings, or Maxobjs?
@@ -1600,9 +1600,9 @@ declare class Patcher {
 	 * @param inlet
 	 */
 	connect(
-		from_object: any,
+		from_object: Maxobj,
 		outlet: number,
-		to_object: any,
+		to_object: Maxobj,
 		inlet: number
 	): void;
 
@@ -1614,9 +1614,9 @@ declare class Patcher {
 	 * @param inlet
 	 */
 	hiddenconnect(
-		from_object: any,
+		from_object: Maxobj,
 		outlet: number,
-		to_object: any,
+		to_object: Maxobj,
 		inlet: number
 	): void;
 
@@ -1637,9 +1637,9 @@ declare class Patcher {
 	 * @param inlet
 	 */
 	disconnect(
-		from_object: any,
+		from_object: Maxobj,
 		outlet: number,
-		to_object: any,
+		to_object: Maxobj,
 		inlet: number
 	): void;
 
@@ -1656,7 +1656,7 @@ declare class Patcher {
 	 * ```
 	 * @param func
 	 */
-	apply(func: (object: any) => void): void;
+	apply(func: (object: Maxobj) => void): void;
 
 	/**
 	 * For all objects in a patcher, calls the function with the each object's Maxobj as an argument.
@@ -1671,7 +1671,7 @@ declare class Patcher {
 	 * this.patcher.applydeep(printobj)
 	 * @param func
 	 */
-	applydeep(func: (object: any) => void): void;
+	applydeep(func: (object: Maxobj) => void): void;
 
 	/**
 	 * For all objects in a patcher, run the test_function for each object's Maxobj as an argument. If the test_function returns true, the action_function is executed with the Maxobj as an argument.
@@ -1679,8 +1679,8 @@ declare class Patcher {
 	 * @param test_function
 	 */
 	applyif(
-		action_function: (object: any) => void,
-		test_function: (object: any) => void
+		action_function: (object: Maxobj) => void,
+		test_function: (object: Maxobj) => void
 	): void;
 
 	/**
@@ -1690,15 +1690,15 @@ declare class Patcher {
 	 * @param test_function
 	 */
 	applydeepif(
-		action_function: (object: any) => void,
-		test_function: (object: any) => void
+		action_function: (object: Maxobj) => void,
+		test_function: (object: Maxobj) => void
 	): void;
 
 	/**
 	 * Removes the object (a Maxobj passed as an argument) from a patcher
 	 * @param obj
 	 */
-	remove(obj: any): void;
+	remove(obj: Maxobj): void;
 
 	/**
 	 * Returns the first object found in a patcher with the given name. The name is a local name as specified by the Name... dialog in a patcher, not the name of a send or receive object. You can also set an object's name using the varname property of a Maxobj.
@@ -1738,13 +1738,13 @@ declare class Patcher {
 	 * Moves the object to the front of the current layer to which it is assigned (either background or foreground). You can change the layer by setting the background property of a Maxobj.
 	 * @param obj
 	 */
-	bringtofront(obj: any): void;
+	bringtofront(obj: Maxobj): void;
 
 	/**
 	 * Moves the object to the back of the current layer to which it is assigned (either background or foreground). You can change the layer by setting the background property of a Maxobj.
 	 * @param obj
 	 */
-	sendtoback(obj: any): void;
+	sendtoback(obj: Maxobj): void;
 
 	/**
 	 *  Returns an Array value containing the names of available attributes for the Patcher.
@@ -1762,6 +1762,28 @@ declare class Patcher {
 	 * @param anything
 	 */
 	setattr(attribute_name: string, anything: string): void;
+}
+
+/**
+ * TODO: is this in the docs somewhere?
+ */
+declare class Box {
+	rect: number[]
+	/**
+	 * TODO: just guessing here
+ 	 */
+	inbang(inlet: number): void;
+
+	/**
+	 * Returns the value of the attribute specified by attribute_name. Lists are returned as JS Array objects.
+	 * @param attribute_name
+	 */
+	getattr(attribute_name: string): number|string|(number|string)[];
+
+	/**
+	 * TODO: docs
+	 */
+	getvalueof(): number;
 }
 
 /**
@@ -1787,7 +1809,7 @@ declare class PolyBuffer {
 	appendempty(duration: number, channels: number): void;
 	clear(): void;
 	print(): void;
-	send(index: number, ...msg: any[]): void;
+	send(index: number, ...msg: (number|string)[]): void;
 
 	/**
 	 * Return an array containing index, name, path, duration, channel, and sample rate.
@@ -1815,41 +1837,41 @@ declare class PolyBuffer {
 declare class Task {
 	/**
 	 * The object argument represents the this during the execution of the function. Use the this keyword (referring to the jsthis object) to be able to use outlets and other js object features. The function argument represents the function you want to execute, and arguments (an array) represents the arguments to pass to the function. The object and arguments arguments are optional. If not present, the parent of the function object (typically jsthis) will be assumed, and there will be no arguments supplied to the function.
-	 * 
+	 *
 	 * Example:
 	 * ```
 	 * function ticker(a, b, c) {
 	 *   post("tick")
 	 * }
-	 * 
+	 *
 	 * args = new Array(3)
 	 * args[0] = 1
 	 * args[1] = 2
 	 * args[2] = 3
 	 * t = new Task(ticker, this, args)
 	 * ```
-	 * 
+	 *
 	 * Although the overall timing accuracy of a Task function is high, the latency between the scheduled time and the actual execution time of a Task function is variable because the function runs in a low-priority thread. Therefore you should avoid using a Task function in a time-critical operation.
-	 * 
+	 *
 	 * For convenience, a Task object is a property of the function executed in a Task. To access the Task from within its function, use the following standard Javascript syntax:
-	 * 
+	 *
 	 * arguments.callee.task
 
 	 * @param func
 	 * @param obj
-	 * @param ...args
+	 * @param args
 	 */
-	constructor(func: (...args: any[]) => void, obj?: any, ...args: any[]);
+	constructor(func: (...args: (number|string)[]) => void, obj?: Maxobj, ...args: (number|string)[]);
 
 	/**
 	 * The arguments passed to the task function. arguments[0] is the first argument.
 	 */
-	arguments: any[];
+	arguments: (number|string)[];
 
 	/**
 	 * The function that is executed in the Task. You can even change this within the task function itself.
 	 */
-	function: (...args: any[]) => void;
+	function: (...args: (number|string)[]) => void;
 
 	/**
 	 * Whether the Task is running or not. Within a function executing within a task, this will always be 1.
@@ -1877,7 +1899,7 @@ declare class Task {
 	 * this.outlet(1, "bang")
 	 * ```
 	 */
-	object: any;
+	object: Maxobj;
 
 	/**
 	 * The number of times the task function has been called. Outside of a task function, the value of iterations is always 0. The value resets each time the task is started (using the repeat(), execute(), or schedule() methods.
@@ -1912,7 +1934,7 @@ declare class Task {
 	 * 3
 	 * @param times
 	 */
-	repeat(times: number): void;
+	repeat(times?: number): void;
 
 	/**
 	 * Run the task once, right now. Equivalent to calling the task function with its arguments.
@@ -2093,7 +2115,7 @@ declare class SQLite {
 	 * @param command
 	 * @param result
 	 */
-	exec(command: string, result: any): number;
+	exec(command: string, result: string): number;
 
 	/**
 	 * Start an SQL transaction on the database. This allows you to batch database updates, and to roll back sets of changes if they do not all complete. When you are done with batch updates, a call to endtransaction() should be executed.
@@ -2162,5 +2184,5 @@ declare class SQLResult {
 	 * @param index
 	 * @param record_no
 	 */
-	value(index: number, record_no: number): any;
+	value(index: number, record_no: number): number|string|(number|string)[];
 }
